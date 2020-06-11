@@ -7,8 +7,8 @@ Para iniciar el proyecto se requiere inicializar el nodo de la db, inicializar e
 
 Instalacion e inicializacion paquetes de vue:
 en la carpeta del proyecto con vue.js instalado utilizar los comandos siguientes:
-cd frontend 
-npm install
+cd frontend ,
+npm install,
 npm run serve
 
 
@@ -18,7 +18,7 @@ cockroach  start --insecure --listen-addr=localhost:8081 --http-addr=localhost:3
 
 Inicializar Go Api:
 en una consola diferente a la del nodo y la de vue ir a la carpeta del proyecto
-cd backend
-cd main
+cd backend,
+cd main,
 go run main.go
 
