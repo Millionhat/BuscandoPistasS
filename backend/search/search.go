@@ -36,8 +36,8 @@ type Host struct {
 }
 
 func GetInfo(h string) []byte {
-	pasado := getInfo(h + "&fromCache=on&maxAge=6")
-	reciente := getInfo(h)
+	pasado := getDomainInfo(h + "&fromCache=on&maxAge=6")
+	reciente := getDomainInfo(h)
 	if len(pasado.Endpoints) != len(reciente.Endpoints) {
 		reciente.Servers_changed = true
 	} else {
@@ -54,7 +54,7 @@ func GetInfo(h string) []byte {
 	return respuesta
 }
 
-func getInfo(h string) *Host {
+func getDomainInfo(h string) *Host {
 
 	url := "https://api.ssllabs.com/api/v3/analyze?host=" + h
 
@@ -76,9 +76,12 @@ func getInfo(h string) *Host {
 		agregar := EndPoint{}
 		ep := []EndPoint{}
 		j := 0
-		size := reflect.TypeOf(endpoints).Size()
-		size = (size - 2) / 10
-		for l := 0; l < int(size); l++ {
+		size := 0
+		if reflect.TypeOf(endpoints) != nil {
+			size = int(reflect.TypeOf(endpoints).Size())
+			size = (size - 2) / 10
+		}
+		for l := 0; l < size; l++ {
 			for k, i := range endpoints.([]interface{})[l].(map[string]interface{}) {
 
 				c := k
@@ -88,7 +91,7 @@ func getInfo(h string) *Host {
 				}
 				if c == "ipAddress" {
 					agregar.IpAddress = i.(string)
-					retrieveExtraInfo(&agregar)
+					getServerInfo(&agregar)
 				}
 				j++
 				if j == 10 {
@@ -109,7 +112,7 @@ func getInfo(h string) *Host {
 	return nil
 }
 
-func retrieveExtraInfo(str *EndPoint) {
+func getServerInfo(str *EndPoint) {
 	url := "https://who.is/whois-ip/ip-address/" + str.IpAddress
 	res, err := http.Get(url)
 	if err != nil {

@@ -1,19 +1,17 @@
 package main
 
 import (
-	"database/sql"
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 
+	D "../DBM"
+	S "../search"
 	"github.com/buaazp/fasthttprouter"
 	_ "github.com/lib/pq"
 	"github.com/valyala/fasthttp"
-
-	S "../search"
 )
 
 type Basket struct {
@@ -80,13 +78,13 @@ func (a *EndPoint) Scan(value interface{}) error {
 }
 
 func Historial(r *fasthttp.RequestCtx) {
-	db := connectDB()
+	//db := connectDB()
 	strContentType := []byte("Content-Type")
 	strApplicationJSON := []byte("application/json")
 	r.Response.Header.SetCanonical(strContentType, strApplicationJSON)
 	r.SetContentType("application/json; charset=UTF-8")
 	r.Response.Header.Add("Access-Control-Allow-Origin", "*")
-	rows, err := db.Query("Select host,datos From infositios")
+	/*rows, err := db.Query("Select host,datos From infositios")
 	if err != nil {
 		panic(err.Error)
 	}
@@ -104,39 +102,13 @@ func Historial(r *fasthttp.RequestCtx) {
 	body.Info = conjunto
 	agregar, _ := json.Marshal(conjunto)
 	r.Response.SetBody(agregar)
-	/*columns, err := rows.Columns()
-	if err != nil {
-		panic(err.Error)
-	}
-	count := len(columns)
-	tableData := make([]map[string]interface{}, 0)
-	values := make([]interface{}, count)
-	valuePtrs := make([]interface{}, count)
-	for rows.Next() {
-		for i := 0; i < count; i++ {
-			valuePtrs[i] = &values[i]
-		}
-		rows.Scan(valuePtrs...)
-		entry := make(map[string]interface{})
-		for i, col := range columns {
-			var v interface{}
-			val := values[i]
-			b, ok := val.([]byte)
-			if ok {
-				v = string(b)
-			} else {
-				v = val
-			}
-			entry[col] = v
-		}
-		tableData = append(tableData, entry)
-	}*/
-	db.Close()
+	db.Close()*/
+	r.Response.SetBody(D.FetchInfo())
 }
 
 func CrearDato(r *fasthttp.RequestCtx) {
 	host := r.UserValue("host").(string)
-	db := connectDB()
+	//db := connectDB()
 	strContentType := []byte("Content-Type")
 	strApplicationJSON := []byte("application/json")
 	r.Response.Header.SetCanonical(strContentType, strApplicationJSON)
@@ -144,29 +116,32 @@ func CrearDato(r *fasthttp.RequestCtx) {
 	r.Response.Header.Add("Access-Control-Allow-Origin", "*")
 	r.SetStatusCode(http.StatusOK)
 	d := S.GetInfo(host)
-	statement, err := db.Prepare(`INSERT INTO infositios(host,datos) VALUES ($1,$2)`)
-	if err != nil {
-		panic(err.Error)
-	}
-	defer statement.Close()
-	guardo, err := statement.Exec(&host, &d)
-	if err != nil {
-		panic(err.Error)
-	}
-	afectada, err := guardo.RowsAffected()
-	if err != nil {
-		panic(err.Error)
-	}
-	fmt.Println(afectada)
+	D.GuardarDato(host, d)
+	/*
+		statement, err := db.Prepare(`INSERT INTO infositios(host,datos) VALUES ($1,$2)`)
+		if err != nil {
+			panic(err.Error)
+		}
+		defer statement.Close()
+		guardo, err := statement.Exec(&host, &d)
+		if err != nil {
+			panic(err.Error)
+		}
+		afectada, err := guardo.RowsAffected()
+		if err != nil {
+			panic(err.Error)
+		}
+		fmt.Println(afectada)
+	*/
 	r.Response.SetBody(d)
 
-	db.Close()
+	//db.Close()
 }
 
 func main() {
-	d := connectDB()
+	/*d := connectDB()
 
-	d.Close()
+	d.Close()*/
 	router := fasthttprouter.New()
 	router.GET("/historial", Historial)
 	router.GET("/nuevo/:host", CrearDato)
@@ -177,11 +152,12 @@ func main() {
 	if err := server.ListenAndServe(":8087"); err != nil {
 		server.Shutdown()
 		log.Fatal(server.ListenAndServe(":8087"))
-		log.Println(d)
+		//log.Println(d)
 	}
 
 }
 
+/*
 func connectDB() *sql.DB {
 	conStr := "postgresql://millionhat@localhost:8081/infobusqueda?sslmode=disable"
 	db, err := sql.Open("postgres", conStr)
@@ -194,3 +170,4 @@ func connectDB() *sql.DB {
 	}
 	return db
 }
+*/
