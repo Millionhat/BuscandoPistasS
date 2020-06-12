@@ -1,22 +1,20 @@
 <template>
   <div>
-    <v-app-bar class="mx-auto" color="#1291e6" grow dark>Proyecto Busqueda de informacion</v-app-bar>
+    <v-app-bar class="mx-auto" color='#a83cde' grow dark>Proyecto Buscando Pistas S</v-app-bar>
     <v-container class="contenedor">
      <v-col class="mb-4">
-      <v-card>
         <h1 class="display-2 font-weight-bold mb3 text-center">
           Bienvenido que deseas hacer
         </h1>
         <h3 class="text-center titulo">
           Deseas buscar la informacion de un dominio o las busquedas anteriores?
         </h3>
-      </v-card>
     </v-col>
     <v-col class="mb-4 text-center subtitulo">
-          <v-btn color='#a83cde' dark v-on:click="bShow = !bShow, hShow=false">Busqueda de Info</v-btn>
-          <v-btn v-on:click="hShow = !hShow, bShow= false">Busquedas Realizadas</v-btn>
+          <v-btn color='#a83cde' dark outlined v-on:click="bShow = !bShow, hShow=false">Busqueda de Info</v-btn>
+          <v-btn color='#a83cde' dark outlined v-on:click="hShow = !hShow, bShow= false">Busquedas Realizadas</v-btn>
      </v-col>
-      <buscar v-if="bShow"/>
+      <buscar v-show="bShow"/>
       <historico v-show="hShow"/>
     </v-container>
   </div>

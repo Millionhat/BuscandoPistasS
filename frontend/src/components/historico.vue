@@ -10,7 +10,7 @@
         v-on:change="getData()"
         hide-details
         single-line/>
-        <div>
+        <div v-show="c">
             {{contenido}}
         </div>
     </v-container>
@@ -29,6 +29,7 @@ export default {
             valores:[],
             informacion:"",
             hShow: false,
+            c: false,
         }
     },
     methods:{
@@ -43,6 +44,7 @@ export default {
     getData: function(){
         this.valores= Object.values(this.contenido)
         this.informacion= this.valores[1]
+        this.c=true
     }
     },
     created(){

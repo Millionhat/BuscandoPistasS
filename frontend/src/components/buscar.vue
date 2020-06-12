@@ -2,9 +2,9 @@
     <v-container>
         <v-row>
         <v-text-field v-model="sitio" label="Que sitio deseas buscar"></v-text-field>
-        <v-btn color="accent" @click="buscarInfo"> Buscar </v-btn>
+        <v-btn color='#a83cde' dark @click="buscarInfo"> Buscar </v-btn>
         </v-row>
-        <div>
+        <div v-show="c">
             {{contenido}}
         </div>
     </v-container>
@@ -19,6 +19,7 @@ export default {
             contenido:[],
             sitio:'',
             link:'',
+            c:false,
 
         }
     },
@@ -27,6 +28,7 @@ export default {
         axios.get('http://localhost:8087/nuevo/'+this.sitio).then(response =>{
             console.log(response.data);
             this.contenido= response.data;
+            this.c=true;
         },error =>{
             console.log(error);
         });
