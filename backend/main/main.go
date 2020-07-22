@@ -6,6 +6,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strings"
 
 	D "../DBM"
 	S "../search"
@@ -108,6 +109,7 @@ func Historial(r *fasthttp.RequestCtx) {
 
 func CrearDato(r *fasthttp.RequestCtx) {
 	host := r.UserValue("host").(string)
+	host = strings.ToLower(host)
 	//db := connectDB()
 	strContentType := []byte("Content-Type")
 	strApplicationJSON := []byte("application/json")

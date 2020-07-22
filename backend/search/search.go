@@ -205,7 +205,7 @@ func getLogo(url string, r *Host) {
 		linea := s
 		la, _ := linea.Attr("href")
 		if strings.Contains(la, ".png") && r.Logo == "" {
-			r.Logo = la
+			r.Logo = url + la
 		}
 	})
 	if r.Logo == "" {
